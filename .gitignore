@@ -1,0 +1,8 @@
+.vscode/
+.qoder/
+.trae/
+
+*.log
+*.db
+
+build/

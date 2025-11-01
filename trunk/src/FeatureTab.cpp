@@ -138,22 +138,19 @@ int FeatureTab::Create(HWND parent,RECT *parentRect)
 
 	SetFont(hgenerate, FONT_BOLD);
 	    
-	if (toolWindow.bands == 1) {
-    	SendMessage(xRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(yRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(zRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    } else if (toolWindow.bands == 2) {
-        SendMessage(xRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(yRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(zRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    } else {
-        SendMessage(xRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(yRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(zRadiobuttons[3],BM_SETCHECK,BST_CHECKED,0);
-    }
-    
+    // Safe defaults: clamp indices to available bands.
+    // bands includes NONE at index 0; max usable index is (bands - 1).
+    int maxIndex = toolWindow.bands - 1;
+    int xIndex = (maxIndex >= 1) ? 1 : 0;
+    int yIndex = (maxIndex >= 2) ? 2 : xIndex;
+    int zIndex = (maxIndex >= 3) ? 3 : yIndex;
+
+    SendMessage(xRadiobuttons[xIndex], BM_SETCHECK, BST_CHECKED, 0);
+    SendMessage(yRadiobuttons[yIndex], BM_SETCHECK, BST_CHECKED, 0);
+    SendMessage(zRadiobuttons[zIndex], BM_SETCHECK, BST_CHECKED, 0);
+
     hFSScrollBox.UpdateScrollBar();
-    //return true;
+    return true;
 }
 
 void FeatureTab::OnGenerateClicked(int lod, bool rois_only, int x, int y, int z)

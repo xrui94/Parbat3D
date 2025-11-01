@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Parbat 3D Reference Manual: Source - Settings PKG</title>
+  <link rel="stylesheet" href="assets/main.css" type="text/css">
+</head>
+
+
+<body>
+<h1>Source - Settings PKG</h1>
+
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+<hr />
+
+<h2>iniFile</h2>
+<p>This class handles access to ini files. Once a file name has been specified in the constructor, you can parse (search for), read or update values. The update function is used to add new values or update existing values in the file.</p>
+
+
+<hr />
+<h2>BatchIniFile</h2>
+<p>Extends the iniFile class to allow for data to be sent to or read from the file in blocks (batch requests). This reduces the amount of file accesses and speeds up the actions. Sections of the file are stored in a buffer which can be read from or written to. This class is especially useful for code that is going to read an entire section in one go such a Region of Interest files.</p>
+
+<hr />
+<h2>settings</h2>
+<p>Allows settings to be saved to and retrieved from an ini file. Access to the file is handled by an iniFile class.</p>
+
+<hr />
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+
+</body>
+</html>

@@ -84,16 +84,16 @@ public:
 
     /* set the default cursor that is shown as mouse is moved over a window */
     void SetDefaultCursor(HCURSOR hcur) {
-        SetClassLong(hwindow,GCL_HCURSOR,(long)hcur);
+        SetClassLongPtr(hwindow,GCLP_HCURSOR,(LONG_PTR)hcur);
     };
 
     /* set the brush used to paint the background of a window */
     void SetBackgroundBrush(HBRUSH hbrush) {
-        SetClassLong(hwindow, GCL_HBRBACKGROUND,(long)hbrush);
+        SetClassLongPtr(hwindow, GCLP_HBRBACKGROUND,(LONG_PTR)hbrush);
         hBackgroundBrush=hbrush;
     };
     static void SetBackgroundBrush(HWND hwin,HBRUSH hbrush) {
-        SetClassLong(hwin,GCL_HBRBACKGROUND,(long)hbrush);
+        SetClassLongPtr(hwin,GCLP_HBRBACKGROUND,(LONG_PTR)hbrush);
     };
 
     /* cause a window to be re-drawn */
@@ -104,7 +104,7 @@ public:
 
     /* return the handle of a particular window's parent window */
     static HWND GetParentHandle(HWND hwnd) {
-        return (HWND)GetWindowLong(hwnd,GWL_HWNDPARENT);
+        return GetParent(hwnd);
     };	// Get Handle To Parent Window From a Handle To a Child Window
 
     /* array used to store keyboard shortcuts */

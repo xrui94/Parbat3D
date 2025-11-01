@@ -23,11 +23,18 @@
 
 #include "ROISet.h"
 
+#ifdef __WINE__
+#include <gtkmm/application.h>
+#include <gtkmm/window.h>
+#include <gtkmm/filechoosernative.h>
+#include <gtkmm/filefilter.h>
+#endif
+
 #include <commdlg.h>
 
 using namespace std;
 
-ImageHandler::ImageHandler* image_handler = NULL;	// Instance handle ptr
+ImageHandler* image_handler = NULL;	// Instance handle ptr
 
 char szStaticControl[] = "static";  /* classname of static text control */
 
@@ -223,13 +230,75 @@ void orderWindows()
 
 void loadFile() {
 #ifdef __WINE__
-  Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
-  dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
-  Gtk::FileFilter filter_text;
-  filter_text.set_name("All files");
-  filter_text.add_mime_type("*");
-  dialog.add_filter(filter_text);
-  dialog.run();
+	// gtkmm4: 使用 Gtk::FileChooserNative 代替已移除的 Gtk::FileChooserDialog
+	// 采用同步 run 方式：创建一个临时窗口作为对话框的 transient parent
+	std::string chosenPath;
+	{
+		auto app = Gtk::Application::create("org.parbat3d.filechooser");
+		Gtk::Window parent;
+		auto chooser = Gtk::FileChooserNative::create(
+			"Please choose a file",
+			parent,
+			Gtk::FileChooserAction::OPEN,
+			"Open",
+			"Cancel"
+		);
+		Gtk::FileFilter filterAll;
+		filterAll.set_name("All files");
+		// gtkmm4 推荐使用通配符 pattern
+		filterAll.add_pattern("*");
+		chooser->add_filter(filterAll);
+		chooser->signal_response().connect([
+			&chosenPath,
+			chooser,
+			app
+		](int response) {
+			if (response == (int)Gtk::ResponseType::ACCEPT) {
+				auto file = chooser->get_file();
+				if (file) {
+					chosenPath = file->get_path();
+				}
+			}
+			chooser->destroy();
+			app->quit();
+		});
+		chooser->show();
+		app->run(parent);
+	}
+	if (chosenPath.empty()) {
+		return; // 用户取消
+	}
+	// 将得到的路径传递到旧流程：模拟 Windows 的 ofn.lpstrFile
+	{
+		closeFile();
+		progressWindow.start(100,true);
+        assert(image_handler == NULL);
+        image_handler = new ImageHandler(overviewWindow.overviewWindowDisplay.GetHandle(), imageWindow.imageWindowDisplay.GetHandle(), (char*)chosenPath.c_str(), regionsSet);
+		assert(image_handler != NULL);
+		if (image_handler->get_image_properties() == NULL) {
+			closeFile();
+			return;
+		}
+		filename = copyString(image_handler->get_image_properties()->getFileName().c_str());
+		imageWindow.updateImageWindowTitle();
+		imageWindow.updateImageScrollbar();
+		toolWindow.Create(imageWindow.GetHandle());
+		roiWindow.Create(imageWindow.GetHandle());
+		contrastWindow.Create(imageWindow.GetHandle());
+		toolWindow.Show();
+		imageWindow.Show();
+		roiWindow.Show();
+		if (settingsFile->getSetting("roi window", "open") == "no")
+			roiWindow.Hide();
+		BringWindowToTop(toolWindow.GetHandle());
+		overviewWindow.Repaint();
+		imageWindow.Repaint();
+		EnableMenuItem(overviewWindow.hMainMenu,IDM_IMAGEWINDOW,false);
+		EnableMenuItem(overviewWindow.hMainMenu,IDM_TOOLSWINDOW,false);
+		EnableMenuItem(overviewWindow.hMainMenu,IDM_ROIWINDOW,false);
+		EnableMenuItem(overviewWindow.hMainMenu,IDM_FILECLOSE,false);
+		EnableMenuItem(overviewWindow.hMainMenu,IDM_CONTSWINDOW,false);
+	}
 #else
     OPENFILENAME ofn;
     char szFileName[MAX_PATH] = "";
@@ -253,8 +322,8 @@ void loadFile() {
         progressWindow.start(100,true);
         
         // load image & setup windows
-        assert(image_handler == NULL);
-	    image_handler = new ImageHandler::ImageHandler(overviewWindow.overviewWindowDisplay.GetHandle(), imageWindow.imageWindowDisplay.GetHandle(), ofn.lpstrFile, regionsSet);
+    	assert(image_handler == NULL);
+	    image_handler = new ImageHandler(overviewWindow.overviewWindowDisplay.GetHandle(), imageWindow.imageWindowDisplay.GetHandle(), ofn.lpstrFile, regionsSet);
 	    assert(image_handler != NULL);
 	    if (image_handler->get_image_properties() == NULL) {
 			// We've hit an un-openable file
@@ -296,8 +365,8 @@ void loadFile() {
         EnableMenuItem(overviewWindow.hMainMenu,IDM_ROIWINDOW,false);
         EnableMenuItem(overviewWindow.hMainMenu,IDM_FILECLOSE,false);
         EnableMenuItem(overviewWindow.hMainMenu,IDM_CONTSWINDOW,false);
-        
-        
+
+
         // stops the progress bar (hides the window)
         progressWindow.end();
     }

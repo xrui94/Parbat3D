@@ -425,12 +425,23 @@ void ImageGL::load_tile_tex(int x_index, int y_index) {
 	// Only load if not already
 	if (get_tile_texture(x_index, y_index) != 0) return;
 	
-	if (free_textures.size() == 0) add_new_texture();
-	assert(free_textures.size() > 0);
+	// 防御：确保存在可用纹理 ID，避免对空 vector 调用 back()
+	if (free_textures.empty()) {
+		add_new_texture();
+		if (free_textures.empty()) {
+			Console::write("(EE) load_tile_tex: no free textures available after add_new_texture.\n");
+			return; // 无法继续安全上传纹理
+		}
+	}
 	// Load the tile data
 	tex_data = tileset->get_tile_RGB(tile_x,tile_y,band_red,band_green,band_blue);
 	
 	// Grab a free texture ID
+	// 由于可能在极端情况下仍为空（如 GL 初始化失败），再次防御检查
+	if (free_textures.empty()) {
+		Console::write("(EE) load_tile_tex: free_textures unexpectedly empty before pop_back.\n");
+		return;
+	}
 	tex_id = free_textures.back();
 	free_textures.pop_back();
 	
@@ -546,6 +557,12 @@ void ImageGL::add_new_texture(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	// 若生成失败或未被驱动识别为有效纹理，避免向容器插入无效 ID
+	if (!glIsTexture(new_tex)) {
+		Console::write("(EE) add_new_texture: glGenTextures returned invalid texture id.\n");
+		return;
+	}
 		
 	/* Load proxy texture to check for enough space */
 	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGB, texture_size, texture_size, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);

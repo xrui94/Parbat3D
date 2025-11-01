@@ -1,6 +1,8 @@
 #include "PchApp.h"
+#include <process.h> // _beginthreadex
 
 #include "ProgressWindow.h"
+#include <commctrl.h>
 
 #include "main.h"
 
@@ -27,15 +29,27 @@ ProgressWindow::~ProgressWindow()
 // create the progress window
 int ProgressWindow::Create () 
 {
-	// create a new thread that will create the window & handle its messages
-	DWORD threadId;
-	HANDLE hBackgroundThread=CreateThread(NULL,0,&ThreadMain,(LPVOID)this,0,&threadId);    
+    // create a new thread that will create the window & handle its messages
+    unsigned threadId = 0;
+    uintptr_t th = _beginthreadex(
+        /*security*/NULL,
+        /*stack*/0,
+        /*start address*/&ThreadMain,
+        /*arg*/this,
+        /*flags*/0,
+        /*thread id*/&threadId);
+    if (th == 0) {
+        return false;
+    }
+    HANDLE hBackgroundThread = (HANDLE)th;
+    (void)hBackgroundThread; // not used currently
+    return true;
 }
 
 // main execution function for progress window's thread
-DWORD WINAPI ProgressWindow::ThreadMain(LPVOID lpParameter)
+unsigned __stdcall ProgressWindow::ThreadMain(void* lpParameter)
 {
-	ProgressWindow* thiswin=(ProgressWindow*)lpParameter;
+    ProgressWindow* thiswin=(ProgressWindow*)lpParameter;
     MSG messages;
  
  	thiswin->init();
@@ -46,8 +60,9 @@ DWORD WINAPI ProgressWindow::ThreadMain(LPVOID lpParameter)
         // Translate keyboard events 
         TranslateMessage(&messages);
         // Send message to the associated window procedure 
-  	    DispatchMessage(&messages);  	    
+    	DispatchMessage(&messages);	    
     }
+    return 0;
 }
 
 // setup progress window
@@ -63,6 +78,10 @@ void ProgressWindow::init()
     // Get Overview Window Location for Progress window alignment
     GetWindowRect(GetDesktopWindow(),&rect);
     
+    // ensure common controls (progress bar) are registered
+    INITCOMMONCONTROLSEX icc; icc.dwSize = sizeof(icc); icc.dwICC = ICC_PROGRESS_CLASS; 
+    InitCommonControlsEx(&icc);
+
     // create prefs window
     int result;
     result=CreateWin(0, "Parbat3D Progress Bar Window", "Parbat3D Loading...",

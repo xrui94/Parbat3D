@@ -13,6 +13,7 @@
 #include <gtkmm.h>
 
 #ifdef __WINE__
+#ifndef _WIN32
 #define __stdcall __attribute__((ms_abi)) 
 #define __cdecl __attribute__((ms_abi)) 
 #define _stdcall __attribute__((ms_abi)) 
@@ -37,20 +38,10 @@
 #define __int32 int 
 #define __int64 long 
 
-#endif
+#endif // !_WIN32
+#endif // __WINE__
 
-#define WIN64 
-#define _WIN64 
-#define __WIN64
-#define __WIN64__ 
-#define WIN32 
-#define _WIN32 
-#define __WIN32 
-#define __WIN32__ 
-#define __WINNT 
-#define __WINNT__
-
-//#endif
+// 不要在非 Windows 平台强制定义 WIN32/WIN64 宏，避免污染第三方头的条件编译判定。
 
 
 
@@ -83,22 +74,35 @@ using std::string;
 #include <queue>
 #include <deque>
 
-// OpenGL
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-// And Win32-API
-#define WINVER 0x0500
-#define _WIN32_IE 0x600
-#define _WIN32_WINNT 0x501
-//#define NOMINMAX
-#include <windows.h>
-#include <commctrl.h>
+// OpenGL 与平台相关头文件
+#ifdef _WIN32
+    // 在 Windows 上，必须先包含 windows.h，再包含 OpenGL 头
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #ifndef WINVER
+        #define WINVER 0x0601
+    #endif
+    #ifndef _WIN32_IE
+        #define _WIN32_IE 0x0900
+    #endif
+    #ifndef _WIN32_WINNT
+        #define _WIN32_WINNT 0x0601
+    #endif
+    #include <windows.h>
+    #include <commctrl.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+#else
+    // 在非 Windows（Linux/WSL）上，仅包含标准 OpenGL 头
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+#endif
 
 // And GDAL
 //#define CPL_STDCALL __stdcall
 //#define CPL_DISABLE_STDCALL 1
-#include <gdal/gdal_priv.h>
+#include <gdal_priv.h>
 
 
 #endif // include guard

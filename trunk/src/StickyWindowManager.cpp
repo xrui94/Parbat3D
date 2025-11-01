@@ -306,7 +306,7 @@ int StickyWindowManager::moveToInsideOfWindow(HWND snapToWin,RECT *rect)
        rect->right=rect->left+winsize.cx;
        isSnapped=true;
     }        
-    
+    return isSnapped;
 }
 
 /* snap a window to another window (by moving it) if it is range */
@@ -384,4 +384,4 @@ int StickyWindowManager::isWindowInNormalState(HWND hwnd)
         return false;
 
     return true;
-}    
+}

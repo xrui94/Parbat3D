@@ -107,8 +107,8 @@ int ROIWindow::Create(HWND parent) {
         Window::GetAppInstance(), NULL);
     CreateTooltip(hOpenButton,"Open ROI Set");
     
-    hOpenIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-    SendMessage (hOpenButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "open.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+    hOpenIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_OPEN_ICON), IMAGE_ICON, 24, 24, 0);
+    SendMessage (hOpenButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hOpenIcon);
     
     //Create Save button
     hSaveButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -117,8 +117,8 @@ int ROIWindow::Create(HWND parent) {
         Window::GetAppInstance(), NULL);
     CreateTooltip(hSaveButton,"Save ROI Set");
     	
-	hSaveIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hSaveButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "save.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hSaveIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_SAVE_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hSaveButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hSaveIcon);
 	
 	//Create New ROI button
 	hNewButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -127,8 +127,8 @@ int ROIWindow::Create(HWND parent) {
 		Window::GetAppInstance(), NULL);
 	CreateTooltip(hNewButton,"New ROI");
 		
-	hNewIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hNewButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "new.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hNewIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_NEW_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hNewButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hNewIcon);
 	
 	//Create Delete ROI button
 	hDeleteButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -137,8 +137,8 @@ int ROIWindow::Create(HWND parent) {
 		Window::GetAppInstance(), NULL);
 	CreateTooltip(hDeleteButton,"Delete ROI");
 		
-	hDeleteIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hDeleteButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "delete.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hDeleteIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_DELETE_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hDeleteButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hDeleteIcon);
 	
 	//Create Polygon selection button
 	hPolyButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -147,8 +147,8 @@ int ROIWindow::Create(HWND parent) {
 		Window::GetAppInstance(), NULL);
 	CreateTooltip(hPolyButton,"Polygon Selection Tool");
 	
-	hPolyIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hPolyButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "poly.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hPolyIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_POLY_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hPolyButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hPolyIcon);
 	
 	//Create Rectangle selection button
 	hRectButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -157,8 +157,8 @@ int ROIWindow::Create(HWND parent) {
 		Window::GetAppInstance(), NULL);
 	CreateTooltip(hRectButton,"Rectangle Selection Tool");
 		
-	hRectIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hRectButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "rect.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hRectIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_RECT_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hRectButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hRectIcon);
 	
 	//Create single point selection button
 	hSingleButton =CreateWindowEx( 0, "BUTTON", NULL, 
@@ -167,8 +167,8 @@ int ROIWindow::Create(HWND parent) {
 		Window::GetAppInstance(), NULL);
 	CreateTooltip(hSingleButton,"Single Point Selection Tool");
 		
-	hSingleIcon=(HICON)LoadImage(NULL,IDI_EXCLAMATION,IMAGE_ICON,0,0,LR_SHARED);
-	SendMessage (hSingleButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)LoadImage (Window::GetAppInstance(), "single.ico", IMAGE_ICON, 24, 24,LR_LOADFROMFILE));
+	hSingleIcon=(HICON)LoadImage(Window::GetAppInstance(), MAKEINTRESOURCE(IDI_SINGLE_ICON), IMAGE_ICON, 24, 24, 0);
+	SendMessage (hSingleButton, BM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)hSingleIcon);
     
     
 	// Tool Tips
@@ -338,7 +338,7 @@ LRESULT CALLBACK ROIWindow::WindowProcedure(HWND hwnd, UINT message, WPARAM wPar
     RECT rect;           /* for general use */
     NMHDR *nmhdr;        /* structure used for WM_NOTIFY events */
     //LPNMHDR pnmh;
-    LPNMLVDISPINFO pdi;
+    LPNMLVDISPINFOW pdi;
     LVITEM lvi;          // list item that is referenced by a message
     int temp_int;        // general use int
     string *temp_str;    // general use string pointer
@@ -360,21 +360,26 @@ LRESULT CALLBACK ROIWindow::WindowProcedure(HWND hwnd, UINT message, WPARAM wPar
                     if (regionsSet->editing())
                         return true;   // don't allow name changes when an entity is being defined
                     else {
-                        pdi = (LPNMLVDISPINFO) lParam;
-                        lvi = pdi->item;
-                        temp_int = lvi.iItem;                                     // get the index of item to be edited
-                        editingROIName = new string(win->getItemText(temp_int));  // get the name of the item at the index
+                        pdi = (LPNMLVDISPINFOW) lParam;
+                        temp_int = pdi->item.iItem;                                 // get the index of item to be edited
+                        editingROIName = new string(win->getItemText(temp_int));    // get the name of the item at the index
                         return false;  // returning false allows text editing, true does not
                     }
                 
                 case LVN_ENDLABELEDIT:
-                    pdi = (LPNMLVDISPINFO) lParam;
-                    lvi = pdi->item;
+                    pdi = (LPNMLVDISPINFOW) lParam;
                     
                     // make sure the text has been changed and a name was being edited
-                    if (lvi.pszText!=NULL && editingROIName!=NULL) {
-                        temp_int = lvi.iItem;                                // get the index of item being edited
-                        temp_str = new string(lvi.pszText);                  // get the new name
+                    if (pdi->item.pszText!=NULL && editingROIName!=NULL) {
+                        temp_int = pdi->item.iItem;                                // get the index of item being edited
+                        // convert wide string to UTF-8 std::string
+                        int needed = WideCharToMultiByte(CP_UTF8, 0, pdi->item.pszText, -1, NULL, 0, NULL, NULL);
+                        std::string newName;
+                        if (needed > 1) {
+                            newName.resize(needed - 1);
+                            WideCharToMultiByte(CP_UTF8, 0, pdi->item.pszText, -1, &newName[0], needed, NULL, NULL);
+                        }
+                        temp_str = new string(newName);
                         
                         // make sure the new name has not already been used
                         if (!(regionsSet->name_exists(*temp_str))) {

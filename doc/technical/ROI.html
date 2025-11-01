@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Parbat 3D Reference Manual: Source - ROI PKG</title>
+  <link rel="stylesheet" href="assets/main.css" type="text/css">
+</head>
+
+
+<body>
+<h1>Source - ROI PKG</h1>
+
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+<hr />
+
+<h2>ROI</h2>
+<p>The ROI class stores all the information to do with a Region of Interest. This includes its colour, name and a vector of entities that is consists of. The definition for the classes below are in the file ROI.h because they are only ever used by the ROI class.</p>
+
+<hr />
+<h3>coord</h3>
+<p>The coord struct is used to store each coordinate point that makes up a Region of Interest entity. Each ROIEntity maintains a vector of coords that are used to make up its shape.</p>
+
+<hr />
+<h3>ROIEntity</h3>
+<p>ROIEntity objects are used to store each of the shapes that make up a Region of Interest. Each entity stores the type of shape and all the coords that it consists of. All the variables and methods in the ROIEntity class are public but there are also separate methods that are used to access them.</p>
+
+
+<hr />
+<h2>ROISet</h2>
+<p>The ROISet class is used to store all the Regions of Interest that are currently being used. Generally there will only be one ROISet object existing at any one time because the user is not able to create more than one set to work on. The only time that multiple ROISet's will be in existence will be during loading from a file. This class allows the set to be viewed as a whole and have operations performed on all Regions of Interest at once.</p>
+
+<hr />
+<h2>ROIFile</h2>
+<p>The ROIFile class is used to carry out all the file operations that may need to be performed for Regions of Interest. These operations can include loading and saving single Regions of Interest or whole sets of Regions of Interest to files. None of the methods in this class perform any checking to see if the file contents are valid or if the set to be added to the file is valid so that responsibility rests entirely with the user of this class.</p>
+
+<hr />
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+
+</body>
+</html>

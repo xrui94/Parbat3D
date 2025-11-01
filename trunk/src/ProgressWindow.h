@@ -22,7 +22,7 @@ class ProgressWindow:public Window {
         
         
     	/* the following functions are executed by progress window's own thread */
-		static DWORD WINAPI ThreadMain(LPVOID lpParameter);	
+		static unsigned __stdcall ThreadMain(void* lpParameter);	
 		void message_start(int steps, bool auto_increment);
 		void message_end();
 		void message_reset();

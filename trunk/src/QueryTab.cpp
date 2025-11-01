@@ -84,6 +84,7 @@ int QueryTab::Create(HWND parent,RECT *parentRect)
 	SetFont(hstatic,Window::FONT_NORMAL);                                  
 				 
 	hQScrollBox.UpdateScrollBar();		
+    return true;
 }
 
 void QueryTab::SetImageBandValue(int i,char *text)

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Parbat 3D Reference Manual: Package Structure</title>
+  <link rel="stylesheet" href="assets/main.css" type="text/css">
+</head>
+
+
+<body>
+<h1>Package Structure</h1>
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+
+<hr />
+
+<p>
+The Parbat 3D Project file organizes the source and resource files into several conceptual packages for ease of managment. The groupings of files is intended to be by scope of functionality, however it has turned out that the actual grouping of the finalised version depends largely on the semantics and beaurocracies of such projects.
+</p>
+
+<h2>Feature Space PKG</h2>
+<p>
+This contains classes to do solely with creating, managing, and drawing the 3-D feature space window(s).
+</p>
+
+<h2>Image File PKG</h2>
+<p>
+This package provides the central ImageFile and ImageProperties classes from which many areas of the project retrieve image data, along with various wrapper and helper classes to better abstract the project from the workings of the underlying GDAL libraries.
+</p>
+
+<h2>Image Manipulation PKG</h2>
+<p>
+The Image Manipulation PKG provides the top-level abstraction of the image, it's loading, display, and navigation to the View PKG.
+</p>
+
+<p>
+The ImageHandler class provides a wrapper for each instance a file is opened or closed, allowing the allocation and cleanup of system resources to be modularized and contained.
+</p>
+
+<h3>OpenGL</h3>
+<p>
+This sub-group contains classes that abstract the manipulation of the graphics hardware sub-system available at runtime, such that higher level classes can operate using logical data-related calls like set_zoom, and set_image_x/set_image_y.
+</p>
+
+<h3>Support</h3>
+<p>
+This sub-group contains data managment and coordinate tracking code.
+</p>
+
+<h2>Region of Interest PKG</h2>
+<p>
+The Region of Interest package provides high-level functionality for tracking the regions defined by the user, their metadata (name, colour), and the potentially hundreds of entities contained therein.
+</p>
+
+<p>
+It also provides the ability to load and save ROIs to file.
+</p>
+
+<h2>Settings PKG</h2>
+<p>
+The Settings package exposes high-level functionality for semantically loading and storing user prefenences, such as window locations, tile size, and amount of system memory to use for the tile cache.
+</p>
+
+<h2>Utils</h2>
+<p>
+The Utils package contains global support classes.
+</p>
+
+<h3>Console</h3>
+<p>
+A simplified, centrally en/dis-abled buffered console output static class to be used for debugging.
+</p>
+
+<h3>StringUtils</h3>
+<p>
+String manipulation and managment functionality to make dealing with the various formats required for the libraries and APIs required a little easier.
+</p>
+
+<h2>View PKG</h2>
+<p>
+Provides top-level display and event managment functionality for the project.
+</p>
+
+<hr />
+
+<h2>Class Diagrams</h2>
+
+<p class="indexlink"><a href="index.html">Back to Contents</a></p>
+
+
+
+</body>
+</html>

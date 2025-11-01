@@ -16,7 +16,7 @@
 #include "StickyWindowManager.h"
 #include "FeatureSpace.h"
 
-extern ImageHandler::ImageHandler* image_handler;
+extern ImageHandler* image_handler;
 extern char szStaticControl[];
 extern HINSTANCE hThisInstance;
 extern HWND hDesktop;

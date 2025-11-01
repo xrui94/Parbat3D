@@ -1,0 +1,48 @@
+#include <windows.h>
+#include "resources.h"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Parbat3D.exe.manifest"  // enable XP visual styles for controls/windows
+
+600 ICON "Parbat3D.ico"
+
+// Button icons embedded as resources to avoid LR_LOADFROMFILE failures
+601 ICON "open.ico"
+602 ICON "save.ico"
+603 ICON "new.ico"
+604 ICON "delete.ico"
+605 ICON "poly.ico"
+606 ICON "rect.ico"
+607 ICON "single.ico"
+
+501 MENU 
+BEGIN
+	POPUP "&File"
+	BEGIN
+		MENUITEM "&Open Image...", IDM_FILEOPEN
+		MENUITEM SEPARATOR
+	//	MENUITEM "&Save", IDM_FILESAVE
+	//	MENUITEM "Save &as...", IDM_FILESAVEAS
+	    MENUITEM "&Close Image", IDM_FILECLOSE
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit", IDM_FILEEXIT
+	END
+
+	POPUP "&Windows"
+	BEGIN
+		MENUITEM "Image", IDM_IMAGEWINDOW
+		MENUITEM "Tools", IDM_TOOLSWINDOW
+		MENUITEM "ROIs", IDM_ROIWINDOW
+		MENUITEM "Contrast Stretch", IDM_CONTSWINDOW
+		MENUITEM SEPARATOR
+		MENUITEM "Reset Positions", IDM_RESETWINPOS
+		MENUITEM "Preferences", IDM_PREFSWINDOW
+		
+	END
+
+	POPUP "&Help"
+	BEGIN
+		MENUITEM "&How to use Parbat3D", IDM_HELPCONTENTS
+		MENUITEM SEPARATOR
+		MENUITEM "&About Parbat3D...", IDM_HELPABOUT
+	END
+END

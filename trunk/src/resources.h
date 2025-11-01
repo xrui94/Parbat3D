@@ -1,4 +1,11 @@
 #define ID_MAIN_ICON        600
+#define IDI_OPEN_ICON       601
+#define IDI_SAVE_ICON       602
+#define IDI_NEW_ICON        603
+#define IDI_DELETE_ICON     604
+#define IDI_POLY_ICON       605
+#define IDI_RECT_ICON       606
+#define IDI_SINGLE_ICON     607
 
 #define ID_MENU             501
 

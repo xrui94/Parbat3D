@@ -110,22 +110,20 @@ int DisplayTab::Create(HWND parent,RECT *parentRect)
 
     
 	}    
-	
-	if (toolWindow.bands == 1) {
-    	SendMessage(redRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(greenRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(blueRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    } else if (toolWindow.bands == 2) {
-        SendMessage(redRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(greenRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(blueRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    } else {
-        SendMessage(redRadiobuttons[1],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(greenRadiobuttons[2],BM_SETCHECK,BST_CHECKED,0);
-    	SendMessage(blueRadiobuttons[3],BM_SETCHECK,BST_CHECKED,0);
-    }
     
+    // Set sensible defaults based on available bands.
+    // 'bands' includes the NONE option at index 0, so max usable index is (bands - 1).
+    int maxIndex = toolWindow.bands - 1;
+    int rIndex = (maxIndex >= 1) ? 1 : 0;      // prefer band 1, else NONE
+    int gIndex = (maxIndex >= 2) ? 2 : rIndex; // prefer band 2, else fall back to R
+    int bIndex = (maxIndex >= 3) ? 3 : gIndex; // prefer band 3, else fall back to G
+
+    SendMessage(redRadiobuttons[rIndex],   BM_SETCHECK, BST_CHECKED, 0);
+    SendMessage(greenRadiobuttons[gIndex], BM_SETCHECK, BST_CHECKED, 0);
+    SendMessage(blueRadiobuttons[bIndex],  BM_SETCHECK, BST_CHECKED, 0);
+
     hDScrollBox.UpdateScrollBar();
+    return true;
 }
 
 LRESULT CALLBACK DisplayTab::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

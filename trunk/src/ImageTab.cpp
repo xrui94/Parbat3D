@@ -36,7 +36,7 @@ int ImageTab::Create(HWND parent,RECT *parentRect)
 	if (fullname.length() > 25) {
 		fname = fullname.substr(0, 12);
 		bname = fullname.substr(fullname.length()-12, fullname.length()-1);
-		finalname = fname + "…" + bname;
+		finalname = fname + "ï¿½" + bname;
 	} else
 	    finalname = fullname;
 	    
@@ -45,7 +45,7 @@ int ImageTab::Create(HWND parent,RECT *parentRect)
 	if (drivername.length() > 25) {
 		fname = drivername.substr(0, 12);
 		bname = drivername.substr(drivername.length()-12, drivername.length()-1);
-		finaldrivname = fname + "…" + bname;
+		finaldrivname = fname + "ï¿½" + bname;
 	} else
 	    finaldrivname = drivername;
 	
@@ -70,6 +70,7 @@ int ImageTab::Create(HWND parent,RECT *parentRect)
     }
     
 
+    return true;
 }
 
 

@@ -16,7 +16,7 @@
 #include "ImageTab.h"
 #include "FeatureTab.h"
 
-#define GWL_WNDPROC (-4)
+// 使用 64 位安全的窗口过程替换宏
 
 // create tool window
 int ToolWindow::Create(HWND) {
@@ -68,7 +68,13 @@ int ToolWindow::Create(HWND) {
 
     // force Windows to send us messages/events related to the tab control
     SetWindowObject(hToolWindowTabControl,(Window*)this);
-    oldTabControlProc=(WNDPROC)SetWindowLong(hToolWindowTabControl,GWL_WNDPROC,(long)&ToolWindowTabControlProcedure);
+    oldTabControlProc = reinterpret_cast<WNDPROC>(
+        SetWindowLongPtr(
+            hToolWindowTabControl,
+            GWLP_WNDPROC,
+            reinterpret_cast<LONG_PTR>(&ToolWindowTabControlProcedure)
+        )
+    );
 
     // add tabs to list
     tabs.push_back(&displayTab);
@@ -160,6 +166,10 @@ void ToolWindow::drawTab(DRAWITEMSTRUCT *dis) {
     else
         SelectObject(dis->hDC,hNormalFont);
     
+    /* ensure text is visible on themed backgrounds */
+    SetTextColor(dis->hDC, GetSysColor(COLOR_BTNTEXT));
+    SetBkMode(dis->hDC, TRANSPARENT);
+
     SelectObject(dis->hDC,hTabPen);                                     /* set border style/colour */   
     SelectObject(dis->hDC,hTabBrush);                                   /* set background fill brush */    
     
@@ -179,8 +189,24 @@ void ToolWindow::measureTab(MEASUREITEMSTRUCT *mis)
     const int TEXT_MARGIN=5;
     SIZE size;
     HDC hdc=GetDC(GetHandle());                                              /* get device context (drawing) object */
-    SelectObject(hdc,hBoldFont);                                                 /* set font that will be used for drawing text */    
-    GetTextExtentPoint32(hdc,(char*)mis->itemData,strlen((char*)mis->itemData),&size);     /* get width of string in pixels */   
+    SelectObject(hdc,hBoldFont);                                             /* set font that will be used for drawing text */
+
+    /* obtain text for the item: prefer itemData, fallback to TabCtrl text */
+    const char* item_text = (const char*)mis->itemData;
+    char buffer[128];
+    if (item_text == NULL || item_text[0] == '\0') {
+        TCITEM tie{};
+        tie.mask = TCIF_TEXT;
+        tie.pszText = buffer;
+        tie.cchTextMax = sizeof(buffer);
+        if (TabCtrl_GetItem(hToolWindowTabControl, mis->itemID, &tie)) {
+            item_text = buffer;
+        } else {
+            item_text = "";
+        }
+    }
+
+    GetTextExtentPoint32(hdc,(char*)item_text,strlen(item_text),&size);     /* get width of string in pixels */
     ReleaseDC(GetHandle(),hdc);                                              /* free device context handle */
     
     mis->itemWidth=size.cx+2*TEXT_MARGIN;                                    /* set width of tab */
@@ -297,9 +323,12 @@ LRESULT CALLBACK ToolWindow::WindowProcedure(HWND hwnd, UINT message, WPARAM wPa
 
         /* WM_MEASUREITEM: an ownerdraw control needs to be measured */        
         case WM_MEASUREITEM:
-            if (((DRAWITEMSTRUCT*)lParam)->CtlType==ODT_TAB)
-                win->measureTab((MEASUREITEMSTRUCT*)lParam);
+        {
+            MEASUREITEMSTRUCT* mis = (MEASUREITEMSTRUCT*)lParam;
+            if (mis->CtlType == ODT_TAB)
+                win->measureTab(mis);
             return 0;
+        }
 
         case WM_SHOWWINDOW:
             /* update window menu item depending on whether window is shown or hidden */
